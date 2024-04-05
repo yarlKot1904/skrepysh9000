@@ -1,0 +1,4 @@
+log:
+  level: DEBUG
+  output-path:
+    - /var/log/skrepysh/skrepysh.log
