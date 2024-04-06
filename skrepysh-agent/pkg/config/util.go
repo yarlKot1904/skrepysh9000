@@ -5,6 +5,7 @@ import (
 	"go.uber.org/zap"
 	"gopkg.in/yaml.v3"
 	"os"
+	"path/filepath"
 )
 
 const (
@@ -28,9 +29,13 @@ func InitLogger(conf *Log) (*zap.Logger, error) {
 	errorOutputPath := conf.ErrorOutputPath
 	if outputPaths == nil {
 		outputPaths = []string{"stdout", defaultLogPath}
+	} else if err := createLogFiles(outputPaths); err != nil {
+		return nil, err
 	}
 	if errorOutputPath == nil {
 		errorOutputPath = []string{"stdout", defaultLogPath}
+	} else if err := createLogFiles(errorOutputPath); err != nil {
+		return nil, err
 	}
 	config := zap.Config{
 		Level:            zap.NewAtomicLevelAt(level),
@@ -40,4 +45,20 @@ func InitLogger(conf *Log) (*zap.Logger, error) {
 		ErrorOutputPaths: errorOutputPath,
 	}
 	return config.Build()
+}
+
+func createLogFiles(filepaths []string) error {
+	for _, f := range filepaths {
+		if f == "stdout" || f == "stderr" {
+			continue
+		}
+		dir := filepath.Dir(f)
+		if err := os.MkdirAll(dir, 0644); err != nil {
+			return err
+		}
+		if _, err := os.OpenFile(f, os.O_RDONLY|os.O_CREATE, 0666); err != nil {
+			return err
+		}
+	}
+	return nil
 }
