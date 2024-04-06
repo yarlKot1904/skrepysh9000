@@ -36,7 +36,7 @@ func getHandlers(log *zap.Logger) map[string]func(w http.ResponseWriter, r *http
 				http.Error(w, "Error unmarshalling request body: %s", http.StatusBadRequest)
 				return
 			}
-			err = request.exec()
+			err = request.exec(log)
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				resp := &errorResponse{
