@@ -2,10 +2,11 @@ package config
 
 import (
 	"fmt"
-	"go.uber.org/zap"
-	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
+
+	"go.uber.org/zap"
+	"gopkg.in/yaml.v3"
 )
 
 const (

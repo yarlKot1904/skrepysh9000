@@ -1,15 +1,16 @@
 package internal
 
 import (
-	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 	"skrepysh-agent/pkg/config"
 	"skrepysh-agent/pkg/server"
+
+	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 var (
-	configPath string         = "/etc/skrepysh/config.yaml"
-	conf       *config.Config = &config.Config{}
+	configPath = "/etc/skrepysh/config.yaml"
+	conf       = &config.Config{}
 	log        *zap.Logger
 	port       int16 = 8080
 )
