@@ -1,7 +1,4 @@
 log:
   level: DEBUG
   output-path:
-#    - /var/log/skrepysh/skrepysh.log
-    - stdout
-  error-output-path:
-    - stderr
+    - /var/log/skrepysh/skrepysh.log
