@@ -6,9 +6,9 @@
 *.so
 *.dylib
 
+local-*
 *.test
 *.out
-
 go.work
 
 bin/

@@ -65,8 +65,3 @@ func (au *addUser) exec() error {
 	_, _, err := pkg.RunCmd(cmd, args...)
 	return err
 }
-
-type errorResponse struct {
-	Error       string `json:"error"`
-	Description string `json:"description"`
-}

@@ -30,12 +30,14 @@ func InitLogger(conf *Log) (*zap.Logger, error) {
 	errorOutputPath := conf.ErrorOutputPath
 	if outputPaths == nil {
 		outputPaths = []string{"stdout", defaultLogPath}
-	} else if err := createLogFiles(outputPaths); err != nil {
+	}
+	if err := createLogFiles(outputPaths); err != nil {
 		return nil, err
 	}
 	if errorOutputPath == nil {
 		errorOutputPath = []string{"stdout", defaultLogPath}
-	} else if err := createLogFiles(errorOutputPath); err != nil {
+	}
+	if err := createLogFiles(errorOutputPath); err != nil {
 		return nil, err
 	}
 	config := zap.Config{
@@ -57,7 +59,7 @@ func createLogFiles(filepaths []string) error {
 		if err := os.MkdirAll(dir, 0644); err != nil {
 			return err
 		}
-		if _, err := os.OpenFile(f, os.O_RDONLY|os.O_CREATE, 0666); err != nil {
+		if err := os.WriteFile(f, []byte{}, 0644); err != nil {
 			return err
 		}
 	}

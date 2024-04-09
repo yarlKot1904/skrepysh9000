@@ -22,40 +22,48 @@ func getHandlers(log *zap.Logger) map[string]func(w http.ResponseWriter, r *http
 
 	const configureEndpoint = "/configure"
 	handlers["/configure"] = func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Accept", "application/json")
 		log.Info(fmt.Sprintf("%s request to %s", r.Method, configureEndpoint))
 		switch r.Method {
 		case http.MethodPost:
 			bodyBytes, err := io.ReadAll(r.Body)
 			if err != nil {
-				http.Error(w, "Error reading request body", http.StatusBadRequest)
+				http.Error(w, wrapStatus("Error reading request body"), http.StatusBadRequest)
 				return
 			}
 			request := &configureRequest{}
 			err = json.Unmarshal(bodyBytes, request)
 			if err != nil {
-				http.Error(w, "Error unmarshalling request body: %s", http.StatusBadRequest)
+				http.Error(w, wrapStatus("Error unmarshalling request body"), http.StatusBadRequest)
 				return
 			}
 			err = request.exec(log)
 			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-				resp := &errorResponse{
-					Error:       err.Error(),
-					Description: "error running commands",
-				}
-				respBytes, err := json.Marshal(resp)
-				if err != nil {
-					w.WriteHeader(http.StatusInternalServerError)
-					return
-				}
-				w.Write(respBytes)
+				http.Error(w, wrapStatus("Error running commands"), http.StatusInternalServerError)
 				return
 			}
 			w.WriteHeader(http.StatusOK)
 		default:
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			http.Error(w, wrapStatus("Method not allowed"), http.StatusMethodNotAllowed)
 		}
 	}
 
+	handlers["/healthcheck"] = func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Accept", "application/json")
+		_, err := w.Write([]byte(wrapStatus("OK")))
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	}
+
 	return handlers
+}
+
+func wrapStatus(statusText string) string {
+	return fmt.Sprintf("{\"status\": \"%s\"}", statusText)
 }
