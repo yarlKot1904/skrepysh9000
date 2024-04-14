@@ -24,7 +24,7 @@ build {
   }
 
   post-processor "vagrant" {
-    output = "ubuntu-2204-amd64.box"
+    output = "ubuntu-2204-amd64.qcow2"
   }
 }
 
