@@ -1,0 +1,5 @@
+database:
+  host: http://localhost
+  port: 5432
+  user: pg-user
+  password-env: DB_PASSWORD
