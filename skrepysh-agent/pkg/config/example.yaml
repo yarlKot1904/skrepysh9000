@@ -2,3 +2,7 @@ log:
   level: DEBUG
   output-path:
     - /var/log/skrepysh/skrepysh.log
+
+node-exporter:
+  host: http://localhost
+  port: 9100

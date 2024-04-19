@@ -3,13 +3,19 @@ package config
 import "go.uber.org/zap/zapcore"
 
 type Config struct {
-	Log Log `yaml:"log"`
+	Log          Log                `yaml:"log"`
+	NodeExporter NodeExporterConfig `yaml:"node-exporter"`
 }
 
 type Log struct {
 	Level           LogLevel `yaml:"level"`
 	OutputPath      []string `yaml:"output-path"`
 	ErrorOutputPath []string `yaml:"error-output-path"`
+}
+
+type NodeExporterConfig struct {
+	Host string `yaml:"host"`
+	Port int16  `json:"port"`
 }
 
 type LogLevel string

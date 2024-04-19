@@ -12,6 +12,10 @@ func TestConfig(t *testing.T) {
 			Level:      LogLevel_DEBUG,
 			OutputPath: []string{"/var/log/skrepysh/skrepysh.log"},
 		},
+		NodeExporter: NodeExporterConfig{
+			Host: "http://localhost",
+			Port: 9100,
+		},
 	}
 	actual := &Config{}
 	err := ReadYaml("example.yaml", actual)
