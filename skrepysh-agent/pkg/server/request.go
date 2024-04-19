@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"skrepysh-agent/pkg"
 
@@ -14,6 +15,7 @@ import (
 type configureRequest struct {
 	WriteFiles []writeFile `json:"write-files"`
 	AddUsers   []addUser   `json:"add-users"`
+	RunCommand []runCmd    `json:"run-command"`
 }
 
 func (c *configureRequest) exec(log *zap.Logger) error {
@@ -21,14 +23,21 @@ func (c *configureRequest) exec(log *zap.Logger) error {
 	for _, wf := range c.WriteFiles {
 		log.Info(fmt.Sprintf("writing file %s", wf.Filepath))
 		if err := wf.exec(); err != nil {
-			log.Error(fmt.Sprintf("could write file %s: %s", wf.Filepath, err.Error()))
+			log.Error(fmt.Sprintf("could write file %s", wf.Filepath), zap.Error(err))
 			errs = errors.Join(errs, err)
 		}
 	}
 	for _, au := range c.AddUsers {
 		log.Info(fmt.Sprintf("creating user %s", au.Username))
 		if err := au.exec(); err != nil {
-			log.Error(fmt.Sprintf("could create user %s: %s", au.Username, err.Error()))
+			log.Error(fmt.Sprintf("could create user %s", au.Username), zap.Error(err))
+			errs = errors.Join(errs, err)
+		}
+	}
+	for _, rc := range c.RunCommand {
+		log.Info(fmt.Sprintf("running command %s", rc.Command))
+		if err := rc.exec(); err != nil {
+			log.Error(fmt.Sprintf("error running command %s", rc.Command), zap.Error(err))
 			errs = errors.Join(errs, err)
 		}
 	}
@@ -62,6 +71,18 @@ func (au *addUser) exec() error {
 	}
 	cmd = "echo"
 	args = []string{fmt.Sprintf("%s:%s", au.Username, au.Password), "|", "chpasswd"}
+	_, _, err := pkg.RunCmd(cmd, args...)
+	return err
+}
+
+type runCmd struct {
+	Command string `json:"command"`
+}
+
+func (rc *runCmd) exec() error {
+	cmdSplit := strings.Split(rc.Command, " ")
+	cmd := cmdSplit[0]
+	args := cmdSplit[1:]
 	_, _, err := pkg.RunCmd(cmd, args...)
 	return err
 }
