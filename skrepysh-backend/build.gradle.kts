@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
@@ -26,7 +26,7 @@ dependencies {
 	implementation("org.junit.jupiter:junit-jupiter:5.8.1")
 
 	implementation("org.ktorm:ktorm-core:3.6.0")
-	implementation("org.ktorm:ktorm-support-postgersql:3.6.0")
+	implementation("org.ktorm:ktorm-support-postgresql:3.6.0")
 	implementation("org.postgresql:postgresql:42.3.8")
 	implementation("org.flywaydb:flyway-core:9.12.0")
 
@@ -41,7 +41,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs += "-Xjsr305=strict"
-		jvmTarget = '21'
+		jvmTarget = "21"
 	}
 }
 
