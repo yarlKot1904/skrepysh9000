@@ -12,18 +12,19 @@ import org.flywaydb.core.Flyway
 import org.springframework.boot.runApplication
 
 
-
 class DatabaseVM() {
-    interface VirtualMachine : Entity<VirtualMachine>{
+    interface VirtualMachine : Entity<VirtualMachine> {
         companion object : Entity.Factory<VirtualMachine>()
 
         var ip: String
         var os: String
     }
-    object VirtualMachinesTable : Table<VirtualMachine>("VirtualMachinesTable") {
+
+    object VirtualMachinesTable : Table<VirtualMachine>("VirtualMachines") {
         val ip = varchar("ip").primaryKey().bindTo { it.ip }
         val os = varchar("os").bindTo { it.os }
     }
+
     fun init(): Database {
         // Конфигурация базы данных
         val database = Database.connect(
@@ -42,21 +43,20 @@ class DatabaseVM() {
         return database
     }
 
-    fun addVM(database: Database,ip : String, os : String) : Boolean {
+    fun addVM(database: Database, ip: String, os: String): Boolean {
 
-         val newVM= database.sequenceOf(VirtualMachinesTable).add(
-             VirtualMachine{this.ip = ip; this.os=os}
-         )
+        val newVM = database.sequenceOf(VirtualMachinesTable).add(
+            VirtualMachine { this.ip = ip; this.os = os }
+        )
 
-        return newVM ==1
+        return newVM == 1
     }
 
-    fun deleteVM(database : Database, ip : String) : Boolean {
+    fun deleteVM(database: Database, ip: String): Boolean {
         val VM = database.sequenceOf(VirtualMachinesTable).find { tmp -> tmp.ip eq ip }
         val affectedVMsNumber = VM?.delete()
         return affectedVMsNumber == 1
     }
-
 
 
 }
