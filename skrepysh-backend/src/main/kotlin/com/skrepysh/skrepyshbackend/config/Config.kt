@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 
 @JsonNaming(PropertyNamingStrategies.KebabCaseStrategy::class)
 data class Config(
-    val database: Database
+    val database: DatabaseConfig
 )
 
 @JsonNaming(PropertyNamingStrategies.KebabCaseStrategy::class)
-data class Database(
+data class DatabaseConfig(
     val host: String,
     val port: Short,
+    val databaseName: String,
     val user: String,
     val passwordEnv: String,
 )
