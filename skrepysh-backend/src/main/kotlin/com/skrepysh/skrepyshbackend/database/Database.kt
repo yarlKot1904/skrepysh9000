@@ -7,9 +7,10 @@ import org.ktorm.entity.add
 import org.ktorm.entity.find
 import org.ktorm.entity.sequenceOf
 import org.flywaydb.core.Flyway
+import org.springframework.beans.factory.annotation.Autowired
 
 
-class DatabaseVM(private val dbConf: DatabaseConfig) {
+class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
     private var database: Database
 
     init {
