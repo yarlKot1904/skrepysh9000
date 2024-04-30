@@ -15,7 +15,6 @@ data class InitRequestBody(var ip: String, var os: String)
 
 @RestController
 class InitController(@Autowired val database: DatabaseVM) {
-
     @PostMapping("/init")
     @ResponseBody
     fun init(@RequestBody request: InitRequestBody): ResponseEntity<String> {
@@ -23,7 +22,7 @@ class InitController(@Autowired val database: DatabaseVM) {
             database.addVM(request.ip, request.os)
             return ResponseEntity<String>(request.ip, HttpStatus.OK)
         } catch (e: Exception) {
-            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't add VM to database")
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "error: ${e.message}")
         }
 
     }

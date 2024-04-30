@@ -17,3 +17,5 @@ bin/
 
 artifacts/
 .packer-http/
+
+local-*.yaml

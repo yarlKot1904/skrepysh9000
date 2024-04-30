@@ -7,6 +7,8 @@ import org.ktorm.entity.add
 import org.ktorm.entity.find
 import org.ktorm.entity.sequenceOf
 import org.flywaydb.core.Flyway
+import org.ktorm.dsl.delete
+import org.ktorm.dsl.insert
 import org.springframework.beans.factory.annotation.Autowired
 
 
@@ -32,17 +34,17 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
         flyway.migrate()
     }
 
-    fun addVM(ip: String, os: String): Boolean {
-        val newVM = this.database.sequenceOf(VirtualMachinesTable).add(
-            VirtualMachine { this.ip = ip; this.os = os }
-        )
-        return newVM == 1
+    fun addVM(ip: String, os: String) {
+        database.insert(VirtualMachinesTable) {
+            set(it.ip, ip)
+            set(it.os, os)
+        }
     }
 
-    fun deleteVM(database: Database, ip: String): Boolean {
-        val VM = database.sequenceOf(VirtualMachinesTable).find { tmp -> VirtualMachinesTable.ip eq ip }
-        val affectedVMsNumber = VM?.delete()
-        return affectedVMsNumber == 1
+    fun deleteVM(ip: String) {
+        database.delete(VirtualMachinesTable) {
+            it.ip eq ip
+        }
     }
 
 

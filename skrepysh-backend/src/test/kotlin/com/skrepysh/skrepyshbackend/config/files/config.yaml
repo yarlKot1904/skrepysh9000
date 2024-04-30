@@ -1,5 +1,5 @@
 database:
-  host: http://localhost
+  host: localhost
   port: 5432
   database-name: db-name
   user: pg-user
