@@ -29,7 +29,7 @@ func RootCommand() *cobra.Command {
 func commands() []*cobra.Command {
 	var cmds []*cobra.Command
 
-	initCmd := &cobra.Command{
+	serveCmd := &cobra.Command{
 		Use: "serve",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := config.ReadYaml(configPath, conf)
@@ -43,9 +43,9 @@ func commands() []*cobra.Command {
 			return server.Serve(log, port)
 		},
 	}
-	initCmd.Flags().StringVarP(&configPath, "config", "c", configPath, "path/to/config")
+	serveCmd.Flags().StringVarP(&configPath, "config", "c", configPath, "path/to/config")
 
-	cmds = append(cmds, initCmd)
+	cmds = append(cmds, serveCmd)
 
 	return cmds
 }
