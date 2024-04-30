@@ -3,12 +3,13 @@ package com.skrepysh.skrepyshbackend
 import com.skrepysh.skrepyshbackend.config.Config
 import com.skrepysh.skrepyshbackend.config.DatabaseConfig
 import com.skrepysh.skrepyshbackend.config.readConfig
+import com.skrepysh.skrepyshbackend.database.DatabaseVM
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ["controllers"])
 class SkrepyshBackendApplication {
     @Bean
     fun config(): Config {
@@ -20,6 +21,11 @@ class SkrepyshBackendApplication {
     @Bean
     fun databaseConfig(): DatabaseConfig {
          return config().database
+    }
+
+    @Bean
+    fun database(): DatabaseVM {
+        return DatabaseVM(databaseConfig())
     }
 }
 

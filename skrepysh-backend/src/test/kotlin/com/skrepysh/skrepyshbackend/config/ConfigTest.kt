@@ -10,7 +10,7 @@ class ConfigTest {
     @Test
     fun readConfig() {
         val config = readConfig(configPath)
-        assertEquals("http://localhost", config.database.host)
+        assertEquals("localhost", config.database.host)
         assertEquals(5432, config.database.port)
         assertEquals("db-name", config.database.databaseName)
         assertEquals("pg-user", config.database.user)
