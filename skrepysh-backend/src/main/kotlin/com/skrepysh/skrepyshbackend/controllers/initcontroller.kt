@@ -1,4 +1,4 @@
-package controllers
+package com.skrepysh.skrepyshbackend.controllers
 
 import com.skrepysh.skrepyshbackend.database.DatabaseVM
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException
 data class InitRequestBody(var ip: String, var os: String)
 
 @RestController
-class InitController(@Autowired val database: DatabaseVM) {
+class InitController(@Autowired private val database: DatabaseVM) {
     @PostMapping("/init")
     @ResponseBody
     fun init(@RequestBody request: InitRequestBody): ResponseEntity<String> {

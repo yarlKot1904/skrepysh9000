@@ -9,7 +9,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 
 
-@SpringBootApplication(scanBasePackages = ["controllers"])
+@SpringBootApplication(scanBasePackages = ["com/skrepysh/skrepyshbackend/controllers"])
 class SkrepyshBackendApplication {
     @Bean
     fun config(): Config {
