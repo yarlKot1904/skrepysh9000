@@ -32,10 +32,9 @@ class SkrepyshBackendApplication {
 }
 
 fun main(args: Array<String>) {
-    val logger = LoggerFactory.getLogger("MyLogger")
-    logger.debug("Это сообщение уровня DEBUG")
-    logger.info("Это сообщение уровня INFO")
-    logger.warn("Это сообщение уровня WARN")
-    logger.error("Это сообщение уровня ERROR")
+    //чтобы логгер правильно определялся
+    val configPath = SkrepyshBackendApplication::class.java.getResource("/logback.xml")?.toString()
+    System.setProperty("logging.config", configPath)
+
     runApplication<SkrepyshBackendApplication>(*args)
 }

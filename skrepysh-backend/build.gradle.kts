@@ -40,10 +40,6 @@ dependencies {
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
-
-	implementation("org.slf4j:slf4j-api:2.0.7")
-	implementation("ch.qos.logback:logback-classic:1.4.12")
-	implementation("org.yaml:snakeyaml:2.0")
 }
 
 
