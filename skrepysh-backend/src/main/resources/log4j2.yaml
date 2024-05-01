@@ -1,0 +1,13 @@
+Configuration:
+  status: warn
+  appenders:
+    Console:
+      name: ConsoleAppender
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "%msg%n"
+  loggers:
+    root: null
+    level: info
+    appender-ref:
+      - ref: ConsoleAppender
