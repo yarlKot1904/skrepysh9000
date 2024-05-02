@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
-	id("org.flywaydb.flyway") version "9.12.0"
 	kotlin("jvm") version "1.9.23"
 	kotlin("plugin.spring") version "1.9.23"
 }
@@ -28,7 +27,6 @@ dependencies {
 	implementation("org.ktorm:ktorm-core:3.6.0")
 	implementation("org.ktorm:ktorm-support-postgresql:3.6.0")
 	implementation("org.postgresql:postgresql:42.3.8")
-	implementation("org.flywaydb:flyway-core:9.12.0")
 
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
