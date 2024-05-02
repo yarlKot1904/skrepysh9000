@@ -8,6 +8,7 @@ import org.ktorm.entity.find
 import org.ktorm.entity.sequenceOf
 import org.flywaydb.core.Flyway
 import org.ktorm.dsl.delete
+import org.ktorm.dsl.from
 import org.ktorm.dsl.insert
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -19,19 +20,12 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
         val url = "jdbc:postgresql://${dbConf.host}:${dbConf.port}/${dbConf.databaseName}"
         val dbPassword = System.getenv(dbConf.passwordEnv) ?: throw RuntimeException("database password not set")
 
-        // Конфигурация базы данных
         this.database = Database.connect(
             url = url,
             driver = "org.postgresql.Driver",
             user = dbConf.user,
             password = dbPassword,
         )
-
-        // Инициализация и запуск миграций с Flyway
-        val flyway = Flyway.configure()
-            .dataSource(url, dbConf.user, dbPassword)
-            .load()
-        flyway.migrate()
     }
 
     fun addVM(ip: String, os: String) {
