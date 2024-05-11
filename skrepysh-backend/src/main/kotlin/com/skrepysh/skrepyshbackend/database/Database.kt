@@ -2,9 +2,9 @@ package com.skrepysh.skrepyshbackend.database
 
 import com.skrepysh.skrepyshbackend.config.DatabaseConfig
 import org.ktorm.database.Database
-import org.ktorm.dsl.eq
-import org.ktorm.dsl.delete
-import org.ktorm.dsl.insert
+import org.ktorm.dsl.*
+import org.ktorm.entity.sequenceOf
+import org.ktorm.entity.toList
 import org.springframework.beans.factory.annotation.Autowired
 import java.sql.SQLException
 
@@ -36,6 +36,10 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
         database.delete(VirtualMachinesTable) {
             it.ip eq ip
         }
+    }
+
+    fun toList(): List<VirtualMachine> {
+        return database.sequenceOf(VirtualMachinesTable).toList()
     }
 
 
