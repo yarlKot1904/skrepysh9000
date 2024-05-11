@@ -5,6 +5,7 @@ import "go.uber.org/zap/zapcore"
 type Config struct {
 	Log          Log                `yaml:"log"`
 	NodeExporter NodeExporterConfig `yaml:"node-exporter"`
+	ServerPort   int16              `yaml:"server-port"`
 }
 
 type Log struct {
