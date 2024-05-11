@@ -41,13 +41,16 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
     }
 
 
-    fun listVMs(): List<VirtualMachineEntity> {
+    fun listVMs(offset: Int, limit: Int): List<VirtualMachineEntity> {
         val query = database.from(VirtualMachinesTable)
             .select(
                 VirtualMachinesTable.ip,
                 VirtualMachinesTable.os,
             )
             .where { VirtualMachinesTable.isActive eq true }
+            .orderBy(VirtualMachinesTable.id.asc())
+            .offset(offset)
+            .limit(limit)
             .map { row ->
                 VirtualMachineEntity(row[VirtualMachinesTable.ip], row[VirtualMachinesTable.os])
             }

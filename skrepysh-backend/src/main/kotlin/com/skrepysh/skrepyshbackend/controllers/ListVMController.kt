@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
+data class ListVMsRequestBody(var offset: Int, var limit: Int)
 
 @RestController
 class ListVMController(@Autowired private val database: DatabaseVM) {
@@ -22,10 +24,11 @@ class ListVMController(@Autowired private val database: DatabaseVM) {
 
     @GetMapping("/listVMs")
     @ResponseBody
-    fun list(): ResponseEntity<List<DatabaseVM.VirtualMachineEntity>> {
+    fun list(@RequestBody request: ListVMsRequestBody): ResponseEntity<List<DatabaseVM.VirtualMachineEntity>> {
         log.info("${context!!.method} request /listVMs")
         try {
-            return ResponseEntity(database.listVMs(), HttpStatus.OK)
+            val list = database.listVMs(request.offset, request.limit)
+            return ResponseEntity(list, HttpStatus.OK)
         } catch (e: Exception) {
             log.error("Error listing vm in database")
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "error: ${e.message}")
