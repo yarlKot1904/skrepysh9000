@@ -25,7 +25,7 @@ class DeleteController(@Autowired private val database: DatabaseVM) {
 
     @PostMapping("/delete")
     @ResponseBody
-    fun init(@RequestBody request: DeleteRequestBody): ResponseEntity<String> {
+    fun delete(@RequestBody request: DeleteRequestBody): ResponseEntity<String> {
         log.info("${context!!.method} request /delete: $request")
         try {
             database.deleteVM(request.ip)
