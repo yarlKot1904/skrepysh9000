@@ -42,18 +42,12 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
     fun toList(): List<VirtualMachine> {
         val query = database.from(VirtualMachinesTable)
             .select(
-                VirtualMachinesTable.id,
                 VirtualMachinesTable.ip,
                 VirtualMachinesTable.os,
-                VirtualMachinesTable.isActive
             )
             .where { VirtualMachinesTable.isActive eq true }
-            .mapNotNull { row ->
-                try {
-                    VirtualMachinesTable.createEntity(row)
-                } catch (npe: NullPointerException) {
-                    null
-                }
+            .map { row ->
+                VirtualMachinesTable.createEntity(row)
             }
         return query
     }
