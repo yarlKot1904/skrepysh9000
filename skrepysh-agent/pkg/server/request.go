@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
-
 	"skrepysh-agent/pkg"
 
 	"go.uber.org/zap"
@@ -80,9 +78,6 @@ type runCmd struct {
 }
 
 func (rc *runCmd) exec() error {
-	cmdSplit := strings.Split(rc.Command, " ")
-	cmd := cmdSplit[0]
-	args := cmdSplit[1:]
-	_, _, err := pkg.RunCmd(cmd, args...)
+	_, _, err := pkg.RunCmd("/bin/bash", "-c", rc.Command)
 	return err
 }
