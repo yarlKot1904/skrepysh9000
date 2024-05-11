@@ -6,7 +6,6 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
 import org.springframework.beans.factory.annotation.Autowired
-import java.sql.SQLException
 
 
 class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
