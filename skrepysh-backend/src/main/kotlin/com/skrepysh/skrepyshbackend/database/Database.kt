@@ -12,6 +12,8 @@ import java.util.*
 class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
     private var database: Database
 
+    data class VirtualMachineEntity(var ip: String?, var os: String?)
+
     init {
         val url = "jdbc:postgresql://${dbConf.host}:${dbConf.port}/${dbConf.databaseName}"
         val dbPassword = System.getenv(dbConf.passwordEnv) ?: throw RuntimeException("database password not set")
@@ -39,7 +41,7 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
     }
 
 
-    fun toList(): List<VirtualMachine> {
+    fun toList(): List<VirtualMachineEntity> {
         val query = database.from(VirtualMachinesTable)
             .select(
                 VirtualMachinesTable.ip,
@@ -47,7 +49,7 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
             )
             .where { VirtualMachinesTable.isActive eq true }
             .map { row ->
-                VirtualMachinesTable.createEntity(row)
+                VirtualMachineEntity(row[VirtualMachinesTable.ip], row[VirtualMachinesTable.os])
             }
         return query
     }
