@@ -3,9 +3,11 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"go.uber.org/zap"
 	"io"
 	"net/http"
+
+	"go.uber.org/zap"
+
 	"skrepysh-agent/pkg/config"
 	"skrepysh-agent/pkg/node_exporter"
 )
