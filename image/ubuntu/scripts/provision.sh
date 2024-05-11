@@ -15,7 +15,7 @@ Requires=docker.service
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/skrepysh-agent serve
-Restart=never
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
