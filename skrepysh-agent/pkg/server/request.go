@@ -67,9 +67,8 @@ func (au *addUser) exec() error {
 	if _, _, err := pkg.RunCmd(cmd, args...); err != nil {
 		return err
 	}
-	cmd = "echo"
-	args = []string{fmt.Sprintf("%s:%s", au.Username, au.Password), "|", "chpasswd"}
-	_, _, err := pkg.RunCmd(cmd, args...)
+	cmd = fmt.Sprintf("echo %s:%s | chpasswd", au.Username, au.Password)
+	_, _, err := pkg.RunCmd("/bin/bash", "-c", cmd)
 	return err
 }
 
