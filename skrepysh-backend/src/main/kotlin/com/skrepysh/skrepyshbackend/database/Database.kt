@@ -41,7 +41,7 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
     }
 
 
-    fun toList(): List<VirtualMachineEntity> {
+    fun listVMs(): List<VirtualMachineEntity> {
         val query = database.from(VirtualMachinesTable)
             .select(
                 VirtualMachinesTable.ip,
