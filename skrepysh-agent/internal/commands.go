@@ -40,7 +40,7 @@ func commands() []*cobra.Command {
 			if err != nil {
 				return err
 			}
-			return server.Serve(log, port)
+			return server.Serve(log, conf)
 		},
 	}
 	serveCmd.Flags().StringVarP(&configPath, "config", "c", configPath, "path/to/config")

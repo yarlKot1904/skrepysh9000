@@ -4,54 +4,44 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"log"
-
 	"net/http"
-	"os"
+	"net/url"
+
+	"skrepysh-agent/pkg/config"
 
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/prom2json"
 )
 
-const (
-	NODE_EXPORTER_ENDPOINT = "http://localhost:9100/metrics" //HOST_NAME
-)
-
-func main() {
-	var err error
-
+func GetNodeExporterMetricsJSON(config *config.NodeExporterConfig) ([]byte, error) {
 	mfChan := make(chan *dto.MetricFamily, 1024)
 
-	transport, err := makeTransport()
-	if err != nil {
-		log.Fatalln(err)
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	go func() {
-		err := prom2json.FetchMetricFamilies(NODE_EXPORTER_ENDPOINT, mfChan, transport)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}()
+	u, err := url.JoinPath(fmt.Sprintf("%s:%d", config.Host, config.Port), "/metrics")
+	if err != nil {
+		return nil, err
+	}
+	err = prom2json.FetchMetricFamilies(u, mfChan, transport)
+	if err != nil {
+		return nil, err
+	}
 
-	result := []*prom2json.Family{}
+	var result = make(map[string]*prom2json.Family)
 	for mf := range mfChan {
-		result = append(result, prom2json.NewFamily(mf))
+		switch *mf.Name {
+		case "node_memory_MemAvailable_bytes", "node_memory_MemTotal_bytes",
+			"node_filesystem_avail_bytes", "node_filesystem_size_bytes",
+			"node_cpu_seconds_total", "node_memory_Percpu_bytes":
+			result[*mf.Name] = prom2json.NewFamily(mf)
+		default:
+		}
 	}
 
 	jsonText, err := json.Marshal(result)
 	if err != nil {
-		log.Fatalln("error marshaling JSON:", err)
+		return nil, err
 	}
-	if _, err := os.Stdout.Write(jsonText); err != nil {
-		log.Fatalln("error writing to stdout:", err)
-	}
-	fmt.Println(jsonText)
-}
-
-func makeTransport() (*http.Transport, error) {
-	var transport *http.Transport
-	transport = &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
-	return transport, nil
+	return jsonText, nil
 }

@@ -3,28 +3,29 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"go.uber.org/zap"
 	"io"
 	"net/http"
-
-	"go.uber.org/zap"
+	"skrepysh-agent/pkg/config"
+	"skrepysh-agent/pkg/node_exporter"
 )
 
-func Serve(log *zap.Logger, port int16) error {
-	for e, h := range getHandlers(log) {
+func Serve(log *zap.Logger, conf *config.Config) error {
+	for e, h := range getHandlers(log, conf) {
 		http.HandleFunc(e, h)
 	}
-	log.Info(fmt.Sprintf("started server on port %d", port))
-	return http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	log.Info(fmt.Sprintf("started server on port %d", conf.ServerPort))
+	return http.ListenAndServe(fmt.Sprintf(":%d", conf.ServerPort), nil)
 }
 
-func getHandlers(log *zap.Logger) map[string]func(w http.ResponseWriter, r *http.Request) {
+func getHandlers(log *zap.Logger, conf *config.Config) map[string]func(w http.ResponseWriter, r *http.Request) {
 	handlers := make(map[string]func(w http.ResponseWriter, r *http.Request))
 
 	const configureEndpoint = "/configure"
-	handlers["/configure"] = func(w http.ResponseWriter, r *http.Request) {
+	handlers[configureEndpoint] = func(w http.ResponseWriter, r *http.Request) {
+		log.Info(fmt.Sprintf("%s request to %s", r.Method, configureEndpoint))
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Accept", "application/json")
-		log.Info(fmt.Sprintf("%s request to %s", r.Method, configureEndpoint))
 		switch r.Method {
 		case http.MethodPost:
 			bodyBytes, err := io.ReadAll(r.Body)
@@ -49,16 +50,40 @@ func getHandlers(log *zap.Logger) map[string]func(w http.ResponseWriter, r *http
 		}
 	}
 
-	handlers["/healthcheck"] = func(w http.ResponseWriter, r *http.Request) {
+	const healthcheckEndpoint = "/healthcheck"
+	handlers[healthcheckEndpoint] = func(w http.ResponseWriter, r *http.Request) {
+		log.Info(fmt.Sprintf("%s request to %s", r.Method, healthcheckEndpoint))
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Accept", "application/json")
 		_, err := w.Write([]byte(wrapStatus("OK")))
 		if err != nil {
-			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
+	}
+
+	const metricsEndpoint = "/metrics"
+	handlers[metricsEndpoint] = func(w http.ResponseWriter, r *http.Request) {
+		log.Info(fmt.Sprintf("%s request to %s", r.Method, metricsEndpoint))
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Accept", "application/json")
+		switch r.Method {
+		case http.MethodGet:
+			metrics, err := node_exporter.GetNodeExporterMetricsJSON(&conf.NodeExporter)
+			if err != nil {
+				log.Error("error fetching node exporter metrics", zap.Error(err))
+				http.Error(w, wrapStatus("error fetching node exporter metrics"), http.StatusInternalServerError)
+			}
+			_, err = w.Write(metrics)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+		default:
+			http.Error(w, wrapStatus("Method not allowed"), http.StatusMethodNotAllowed)
+		}
 	}
 
 	return handlers
