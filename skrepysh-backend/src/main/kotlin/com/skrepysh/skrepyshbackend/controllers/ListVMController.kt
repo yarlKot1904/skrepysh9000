@@ -24,9 +24,10 @@ class ListVMController(@Autowired private val database: DatabaseVM) {
     @GetMapping("/listVMs")
     @ResponseBody
     fun list(): ResponseEntity<List<VirtualMachine>> {
+        log.info("${context!!.method} request /listVMs")
         try {
-            return  ResponseEntity(database.toList(), HttpStatus.OK)
-        }catch (e:Exception){
+            return ResponseEntity(database.toList(), HttpStatus.OK)
+        } catch (e: Exception) {
             log.error("Error listing vm in database")
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "error: ${e.message}")
         }
