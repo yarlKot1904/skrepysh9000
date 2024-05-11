@@ -6,6 +6,7 @@ import org.ktorm.dsl.*
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
 import org.springframework.beans.factory.annotation.Autowired
+import java.util.*
 
 
 class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
@@ -37,8 +38,24 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
         }
     }
 
+
     fun toList(): List<VirtualMachine> {
-        return database.sequenceOf(VirtualMachinesTable).toList()
+        val query = database.from(VirtualMachinesTable)
+            .select(
+                VirtualMachinesTable.id,
+                VirtualMachinesTable.ip,
+                VirtualMachinesTable.os,
+                VirtualMachinesTable.isActive
+            )
+            .where { VirtualMachinesTable.isActive eq true }
+            .mapNotNull { row ->
+                try {
+                    VirtualMachinesTable.createEntity(row)
+                } catch (npe: NullPointerException) {
+                    null
+                }
+            }
+        return query
     }
 
 
