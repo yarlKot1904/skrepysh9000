@@ -31,7 +31,7 @@ class DeleteController(@Autowired private val database: DatabaseVM) {
             database.deleteVM(request.ip)
             return ResponseEntity<String>(HttpStatus.OK)
         } catch (e: Exception) {
-            log.error("Error deleting vm to database: $request")
+            log.error("Error deleting vm from database: $request")
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "error: ${e.message}")
         }
 
