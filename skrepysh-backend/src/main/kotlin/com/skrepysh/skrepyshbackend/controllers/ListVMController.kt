@@ -1,7 +1,6 @@
 package com.skrepysh.skrepyshbackend.controllers
 
 import com.skrepysh.skrepyshbackend.database.DatabaseVM
-import com.skrepysh.skrepyshbackend.database.VirtualMachine
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,7 +22,7 @@ class ListVMController(@Autowired private val database: DatabaseVM) {
 
     @GetMapping("/listVMs")
     @ResponseBody
-    fun list(): ResponseEntity<List<VirtualMachine>> {
+    fun list(): ResponseEntity<List<DatabaseVM.VirtualMachineEntity>> {
         log.info("${context!!.method} request /listVMs")
         try {
             return ResponseEntity(database.toList(), HttpStatus.OK)
