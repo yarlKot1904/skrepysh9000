@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.slf4j.Logger
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.client.RestTemplate
 
 @Controller
 class VMsPageController(@Autowired private val database: DatabaseVM) {
@@ -42,10 +43,24 @@ class VMsPageController(@Autowired private val database: DatabaseVM) {
         val vm = database.getVMByID(id)
         if (vm != null) {
             model.addAttribute("vm", vm)
+
+            val metrics = fetchMetrics(vm.ip!!)
+            model.addAttribute("metrics", metrics)
+
             return "vm-detail"
         } else {
             log.error("vm with id $id not found")
             return "vm-not-found"
+        }
+    }
+
+    private fun fetchMetrics(ip: String): Map<String, Any>? {
+        val restTemplate = RestTemplate()
+        val url = "http://$ip:48934/metrics"
+        return try {
+            restTemplate.getForObject(url, Map::class.java) as Map<String, Any>?
+        } catch (e: Exception) {
+            null
         }
     }
 }
