@@ -35,6 +35,9 @@ dependencies {
 
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2")
+
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.2.5")
+	implementation("org.springframework.boot:spring-boot-starter-web:3.2.5")
 }
 
 tasks.withType<KotlinCompile> {

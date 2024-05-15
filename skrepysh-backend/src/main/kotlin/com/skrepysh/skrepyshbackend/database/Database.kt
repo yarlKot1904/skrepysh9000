@@ -12,7 +12,7 @@ import java.util.*
 class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
     private var database: Database
 
-    data class VirtualMachineEntity(var ip: String?, var os: String?)
+    data class VirtualMachineEntity(var id: Int?, var ip: String?, var os: String?)
 
     init {
         val url = "jdbc:postgresql://${dbConf.host}:${dbConf.port}/${dbConf.databaseName}"
@@ -44,6 +44,7 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
     fun listVMs(offset: Int, limit: Int): List<VirtualMachineEntity> {
         val query = database.from(VirtualMachinesTable)
             .select(
+                VirtualMachinesTable.id,
                 VirtualMachinesTable.ip,
                 VirtualMachinesTable.os,
             )
@@ -52,10 +53,33 @@ class DatabaseVM(@Autowired private val dbConf: DatabaseConfig) {
             .offset(offset)
             .limit(limit)
             .map { row ->
-                VirtualMachineEntity(row[VirtualMachinesTable.ip], row[VirtualMachinesTable.os])
+                VirtualMachineEntity(
+                    row[VirtualMachinesTable.id],
+                    row[VirtualMachinesTable.ip],
+                    row[VirtualMachinesTable.os]
+                )
             }
         return query
     }
 
+    fun getVMsCount(): Int {
+        val query = database.from(VirtualMachinesTable)
+            .select().where { VirtualMachinesTable.isActive eq true }
+            .totalRecordsInAllPages
+        return query
+    }
 
+    fun getVMByID(id: Int): VirtualMachineEntity? {
+        val query = database.from(VirtualMachinesTable)
+            .select().where { VirtualMachinesTable.id eq id }
+            .map { row ->
+                VirtualMachineEntity(
+                    row[VirtualMachinesTable.id],
+                    row[VirtualMachinesTable.ip],
+                    row[VirtualMachinesTable.os]
+                )
+            }
+        if (query.size != 1) return null
+        return query[0]
+    }
 }
