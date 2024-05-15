@@ -11,6 +11,9 @@ node-exporter:
   host: localhost
   port: 9100
 
+skrepysh-backend:
+  host: localhost
+  port: 8080
 EOF
 
 cat <<EOF > $wd/etc/systemd/system/skrepysh-agent.service
