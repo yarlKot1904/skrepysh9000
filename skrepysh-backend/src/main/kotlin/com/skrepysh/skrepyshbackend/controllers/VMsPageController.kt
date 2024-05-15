@@ -45,7 +45,11 @@ class VMsPageController(@Autowired private val database: DatabaseVM) {
             model.addAttribute("vm", vm)
 
             val metrics = fetchMetrics(vm.ip!!)
-            model.addAttribute("metrics", metrics)
+            if (metrics != null) {
+                model.addAttribute("metricsJson", metrics.toString())
+            } else {
+                model.addAttribute("metricsJson", "Metrics are not available")
+            }
 
             return "vm-detail"
         } else {

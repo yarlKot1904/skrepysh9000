@@ -8,7 +8,7 @@ packer {
 }
 
 source "qemu" "jammy" {
-  accelerator      = "kvm"
+#   accelerator      = "kvm"
   disk_compression = true
   disk_interface   = "virtio"
   disk_image       = true
@@ -47,7 +47,11 @@ build {
     destination = "/tmp/skrepysh-agent"
   }
   provisioner "file" {
-    source      = "scripts/"
+    source      = "scripts/install-packages.sh"
+    destination = "/tmp/"
+  }
+  provisioner "file" {
+    source      = "scripts/provision.sh"
     destination = "/tmp/"
   }
 
@@ -57,9 +61,10 @@ build {
       "sudo apt upgrade",
 
       "sudo mv /tmp/skrepysh-agent /usr/local/bin/skrepysh-agent",
-      "sudo /bin/bash /tmp/scripts/install-packages.sh",
-      "sudo /bin/bash /tmp/scripts/provision.sh",
-      "sudo rm /tmp/*"
+      "sudo /bin/bash /tmp/install-packages.sh",
+      "sudo rm /tmp/install-packages.sh",
+      "sudo /bin/bash /tmp/provision.sh",
+      "sudo rm /tmp/provision.sh",
     ]
   }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Virtual Machine Detail</title>
@@ -13,19 +13,20 @@
     <p><strong>Operating System:</strong> <span th:text="${vm.os}"></span></p>
 
     <h3>Metrics</h3>
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="metricsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Select Metric
-        </button>
-        <div class="dropdown-menu" aria-labelledby="metricsDropdown">
-            <div th:if="${metrics != null}">
-                <div th:each="metricEntry : ${metrics}">
-                    <h6 class="dropdown-header" th:text="${metricEntry.key}"></h6>
-                    <a class="dropdown-item" href="#" th:each="metric : ${metricEntry.value.metrics}" th:text="'CPU: ' + ${metric.labels.cpu} + ', Value: ' + ${metric.value}"></a>
-                </div>
+    <div id="metricsAccordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Metrics JSON
+                    </button>
+                </h5>
             </div>
-            <div th:if="${metrics == null}">
-                <a class="dropdown-item" href="#">No metrics available</a>
+
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#metricsAccordion">
+                <div class="card-body">
+                    <pre><code th:utext="${metricsJson}"></code></pre>
+                </div>
             </div>
         </div>
     </div>

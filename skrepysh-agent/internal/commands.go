@@ -12,7 +12,7 @@ var (
 	configPath = "/etc/skrepysh/config.yaml"
 	conf       = &config.Config{}
 	log        *zap.Logger
-	port       int16 = 8080
+	port       uint16 = 8080
 )
 
 func RootCommand() *cobra.Command {

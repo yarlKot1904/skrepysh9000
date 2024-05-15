@@ -1,6 +1,6 @@
 variable "cpu" {
   type    = string
-  default = "4"
+  default = "8"
 }
 
 variable "disk_size" {
@@ -40,7 +40,7 @@ variable "name" {
 
 variable "ram" {
   type    = string
-  default = "4096"
+  default = "8192"
 }
 
 variable "ssh_password" {

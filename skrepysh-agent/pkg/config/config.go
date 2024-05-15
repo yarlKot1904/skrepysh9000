@@ -3,9 +3,10 @@ package config
 import "go.uber.org/zap/zapcore"
 
 type Config struct {
-	Log          Log                `yaml:"log"`
-	NodeExporter NodeExporterConfig `yaml:"node-exporter"`
-	ServerPort   int16              `yaml:"server-port"`
+	Log             Log                   `yaml:"log"`
+	NodeExporter    NodeExporterConfig    `yaml:"node-exporter"`
+	ServerPort      uint16                `yaml:"server-port"`
+	SkrepyshBackend SkrepyshBackendConfig `yaml:"skrepysh-backend"`
 }
 
 type Log struct {
@@ -16,7 +17,12 @@ type Log struct {
 
 type NodeExporterConfig struct {
 	Host string `yaml:"host"`
-	Port int16  `json:"port"`
+	Port uint16 `json:"port"`
+}
+
+type SkrepyshBackendConfig struct {
+	Host string `yaml:"host"`
+	Port uint16 `yaml:"port"`
 }
 
 type LogLevel string

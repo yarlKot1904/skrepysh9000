@@ -19,7 +19,7 @@ func GetNodeExporterMetricsJSON(config *config.NodeExporterConfig) ([]byte, erro
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	u, err := url.JoinPath(fmt.Sprintf("%s:%d", config.Host, config.Port), "/metrics")
+	u, err := url.JoinPath(fmt.Sprintf("http://%s:%d", config.Host, config.Port), "/metrics")
 	if err != nil {
 		return nil, err
 	}

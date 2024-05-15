@@ -17,27 +17,31 @@ cat <<EOF > $wd/etc/systemd/system/skrepysh-agent.service
 [Unit]
 Description=Skrepysh Agent
 After=docker.service
+Requires=node-exporter.service
 
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/skrepysh-agent serve
 Restart=always
+RestartSec=3
 
 [Install]
 WantedBy=multi-user.target
 EOF
+systemctl enable skrepysh-agent.service
 
 cat <<EOF > $wd/etc/systemd/system/node-exporter.service
 [Unit]
 Description=Node Exporter
 After=docker.service
-Requires=skrepysh-agent.service
 
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/node_exporter
 Restart=always
+RestartSec=3
 
 [Install]
 WantedBy=multi-user.target
 EOF
+systemctl enable node-exporter.service
