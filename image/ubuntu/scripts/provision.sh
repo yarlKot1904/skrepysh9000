@@ -12,7 +12,7 @@ node-exporter:
   port: 9100
 
 skrepysh-backend:
-  host: localhost
+  host: 192.168.64.1
   port: 8080
 EOF
 
