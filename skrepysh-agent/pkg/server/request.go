@@ -69,6 +69,10 @@ func (au *addUser) exec() error {
 		return err
 	}
 	cmd = fmt.Sprintf("echo '%s:%s' | chpasswd", au.Username, au.Password)
+	if _, _, err := pkg.RunCmd("/bin/bash", "-c", cmd); err != nil {
+		return err
+	}
+	cmd = fmt.Sprintf("echo '%s ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers", au.Username)
 	_, _, err := pkg.RunCmd("/bin/bash", "-c", cmd)
 	return err
 }
