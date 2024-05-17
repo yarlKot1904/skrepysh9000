@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <h3>Create File</h3>
+    <h3 class="mt-4">Create File</h3>
     <div class="form-group">
         <label for="filePathInput">File Path:</label>
         <input type="text" class="form-control" id="filePathInput">
@@ -44,7 +44,26 @@
     </div>
     <button class="btn btn-primary" th:ip="${vm.ip}" onclick="createFile(this.getAttribute('ip'))">Create File</button>
 
-    <a href="/vms" class="btn btn-primary mt-3">Return to Virtual Machines List</a>
+    <h3 class="mt-4">Run Command</h3>
+    <div class="form-group">
+        <label for="filePathInput">Command:</label>
+        <input type="text" class="form-control" id="command">
+    </div>
+    <button class="btn btn-primary" th:ip="${vm.ip}" onclick="runCmd(this.getAttribute('ip'))">Run Command</button>
+
+    <h3 class="mt-4">Create User</h3>
+    <div class="form-group">
+        <label for="filePathInput">Username:</label>
+        <input type="text" class="form-control" id="username">
+    </div>
+    <div class="form-group">
+        <label for="filePathInput">Password:</label>
+        <input type="text" class="form-control" id="password">
+    </div>
+    <button class="btn btn-primary" th:ip="${vm.ip}" onclick="createUser(this.getAttribute('ip'))">Create User</button>
+
+    <h3></h3>
+    <a href="/vms" class="btn btn-primary mt-4 mb-4">Return to Virtual Machines List</a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -63,6 +82,38 @@
                 }
             ]
         };
+        post(url, data)
+    }
+
+    function runCmd(vmIP) {
+        var command = document.getElementById('command').value;
+        var url = 'http://' + vmIP + ':48934/configure';
+        var data = {
+            "run-command": [
+                {
+                    "command": command,
+                }
+            ]
+        };
+        post(url, data)
+    }
+
+    function createUser(vmIP) {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        var url = 'http://' + vmIP + ':48934/configure';
+        var data = {
+            "create-users": [
+                {
+                    "username": username,
+                    "password": password
+                }
+            ]
+        };
+        post(url, data)
+    }
+
+    function post(url, data) {
         fetch(url, {
             method: 'POST',
             headers: {
