@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/zcalusic/sysinfo"
 	"net"
 	"net/http"
 	"net/url"
 	"os"
+
+	"github.com/zcalusic/sysinfo"
+
 	"skrepysh-agent/pkg/config"
 )
 

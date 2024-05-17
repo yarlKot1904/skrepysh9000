@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"syscall"
+
 	"skrepysh-agent/pkg/client"
 	"skrepysh-agent/pkg/config"
 	"skrepysh-agent/pkg/server"
-	"syscall"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -47,14 +48,14 @@ func commands() []*cobra.Command {
 			}
 
 			c, err := client.New(&conf.SkrepyshBackend)
-			fmt.Printf(c.IP)
-			fmt.Printf(c.OS)
-
 			if err != nil {
+				log.Error("error initializing client", zap.Error(err))
 				return err
 			}
+
 			err = c.Init()
 			if err != nil {
+				log.Error("error initializing vm", zap.Error(err))
 				return err
 			}
 
