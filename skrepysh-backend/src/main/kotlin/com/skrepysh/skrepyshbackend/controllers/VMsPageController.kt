@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate
 class VMsPageController(@Autowired private val database: DatabaseVM) {
     @Autowired
     private val context: HttpServletRequest? = null
-    val log: Logger = LoggerFactory.getLogger(ListVMController::class.java)
+    val log: Logger = LoggerFactory.getLogger(VMsPageController::class.java)
 
     @GetMapping("/vms")
     fun vmsPage(
