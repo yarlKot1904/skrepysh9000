@@ -56,7 +56,8 @@ func getHandlers(log *zap.Logger, conf *config.Config) map[string]func(w http.Re
 			}
 			err = request.exec(log)
 			if err != nil {
-				http.Error(w, wrapStatus("Error running commands"), http.StatusInternalServerError)
+				http.Error(w, wrapStatus(fmt.Sprintf("Error running commands: %s", err.Error())),
+					http.StatusInternalServerError)
 				return
 			}
 			_, err = w.Write([]byte(wrapStatus("OK")))
