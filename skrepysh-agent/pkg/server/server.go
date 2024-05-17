@@ -12,12 +12,25 @@ import (
 	"skrepysh-agent/pkg/node_exporter"
 )
 
+func corsHandler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "*")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func Serve(log *zap.Logger, conf *config.Config) error {
 	for e, h := range getHandlers(log, conf) {
 		http.HandleFunc(e, h)
 	}
 	log.Info(fmt.Sprintf("started server on port %d", conf.ServerPort))
-	return http.ListenAndServe(fmt.Sprintf(":%d", conf.ServerPort), nil)
+	return http.ListenAndServe(fmt.Sprintf(":%d", conf.ServerPort), corsHandler(http.DefaultServeMux))
 }
 
 func getHandlers(log *zap.Logger, conf *config.Config) map[string]func(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +57,11 @@ func getHandlers(log *zap.Logger, conf *config.Config) map[string]func(w http.Re
 			err = request.exec(log)
 			if err != nil {
 				http.Error(w, wrapStatus("Error running commands"), http.StatusInternalServerError)
+				return
+			}
+			_, err = w.Write([]byte(wrapStatus("OK")))
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 			w.WriteHeader(http.StatusOK)

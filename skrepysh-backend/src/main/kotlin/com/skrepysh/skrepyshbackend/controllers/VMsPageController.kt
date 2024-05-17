@@ -1,16 +1,19 @@
 package com.skrepysh.skrepyshbackend.controllers
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.skrepysh.skrepyshbackend.database.DatabaseVM
 import jakarta.servlet.http.HttpServletRequest
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.slf4j.Logger
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.client.RestTemplate
+
 
 @Controller
 class VMsPageController(@Autowired private val database: DatabaseVM) {
@@ -46,7 +49,7 @@ class VMsPageController(@Autowired private val database: DatabaseVM) {
 
             val metrics = fetchMetrics(vm.ip!!)
             if (metrics != null) {
-                model.addAttribute("metricsJson", metrics.toString())
+                model.addAttribute("metricsJson", metrics)
             } else {
                 model.addAttribute("metricsJson", "Metrics are not available")
             }
@@ -58,11 +61,14 @@ class VMsPageController(@Autowired private val database: DatabaseVM) {
         }
     }
 
-    private fun fetchMetrics(ip: String): Map<String, Any>? {
+    private fun fetchMetrics(ip: String): String? {
         val restTemplate = RestTemplate()
         val url = "http://$ip:48934/metrics"
         return try {
-            restTemplate.getForObject(url, Map::class.java) as Map<String, Any>?
+            val objectMapper = ObjectMapper()
+            objectMapper.writeValueAsString(
+                restTemplate.getForObject(url, Map::class.java) as Map<String, Any>?
+            )
         } catch (e: Exception) {
             null
         }

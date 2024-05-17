@@ -17,7 +17,8 @@
         <div class="card">
             <div class="card-header" id="headingOne">
                 <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false"
+                            aria-controls="collapseOne">
                         Metrics JSON
                     </button>
                 </h5>
@@ -25,11 +26,23 @@
 
             <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#metricsAccordion">
                 <div class="card-body">
-                    <pre><code th:utext="${metricsJson}"></code></pre>
+                    <pre><code
+                            th:utext="'<script>document.write(JSON.stringify(' + ${metricsJson} + '))</script>'"></code></pre>
                 </div>
             </div>
         </div>
     </div>
+
+    <h3>Create File</h3>
+    <div class="form-group">
+        <label for="filePathInput">File Path:</label>
+        <input type="text" class="form-control" id="filePathInput">
+    </div>
+    <div class="form-group">
+        <label for="fileContentInput">Content:</label>
+        <textarea class="form-control" id="fileContentInput"></textarea>
+    </div>
+    <button class="btn btn-primary" th:ip="${vm.ip}" onclick="createFile(this.getAttribute('ip'))">Create File</button>
 
     <a href="/vms" class="btn btn-primary mt-3">Return to Virtual Machines List</a>
 </div>
@@ -37,5 +50,31 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function createFile(vmIP) {
+        var filePath = document.getElementById('filePathInput').value;
+        var fileContent = document.getElementById('fileContentInput').value;
+        var url = 'http://' + vmIP + ':48934/configure';
+        var data = {
+            "write-files": [
+                {
+                    "filepath": filePath,
+                    "content": fileContent
+                }
+            ]
+        };
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            return response.json()
+        }).then(data => {
+            alert(`Response: ${JSON.stringify(data)}`);
+        })
+    }
+</script>
 </body>
 </html>
